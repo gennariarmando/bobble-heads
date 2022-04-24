@@ -38,7 +38,7 @@ public:
 		ThiscallEvent <AddressList<0x602BE7, H_CALL>, PRIORITY_AFTER, ArgPick2N<CPad*, 0, int, 1>, void(CPad*, int)> addToPCCheatString;
 #endif
 		addToPCCheatString += [] (CPad* pad, int) {
-			if (!strncmp(cheatString, pad->KeyBoardCheatString, sizeof(cheatString) - 1)) {
+			if (!strncmp(cheatString, pad->KeyBoardCheatString, 11)) {
 				bobbleHeads = bobbleHeads == false;
 				CHud::SetHelpMessage(TheText.Get(bobbleHeads ? "CHEATON" : "CHEATOF"), true);
 			}
