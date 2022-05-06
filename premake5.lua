@@ -1,5 +1,5 @@
 workspace "bobble-heads"
-	configurations { "ReleaseVC", "DebugVC", "ReleaseIII", "DebugIII" }
+	configurations { "ReleaseSA", "DebugSA", "ReleaseVC", "DebugVC", "ReleaseIII", "DebugIII" }
 	location "project_files"
    
 project "bobble-heads"
@@ -52,6 +52,17 @@ project "bobble-heads"
 		debugcommand "$(GTA_VC_DIR)/gta-vc.exe"
 		postbuildcommands "copy /y \"$(TargetPath)\" \"$(GTA_VC_DIR)\\scripts\\BobbleHeadsVC.asi\""
 	
+	filter { "configurations:*SA" }	
+		defines { "GTASA", "PLUGIN_SGV_10US" }	
+		includedirs {
+			"$(PLUGIN_SDK_DIR)/plugin_sa/",
+			"$(PLUGIN_SDK_DIR)/plugin_sa/game_sa/",
+		}
+		targetname "BobbleHeadsSA"
+		debugdir "$(GTA_SA_DIR)"
+		debugcommand "$(GTA_SA_DIR)/gta-sa.exe"
+		postbuildcommands "copy /y \"$(TargetPath)\" \"$(GTA_SA_DIR)\\scripts\\BobbleHeadsSA.asi\""
+	
 	filter { }
 	
 	libdirs { 
@@ -70,11 +81,15 @@ project "bobble-heads"
 		optimize "On"
 		staticruntime "on"
 		
+	filter "configurations:ReleaseSA"
+		links { "plugin" }
 	filter "configurations:ReleaseVC"
 		links { "plugin_vc" }
 	filter "configurations:ReleaseIII"
 		links { "plugin_iii" }
 		
+	filter "configurations:DebugSA"
+		links { "plugin_d" }
 	filter "configurations:DebugVC"
 		links { "plugin_vc_d" }
 	filter "configurations:DebugIII"
