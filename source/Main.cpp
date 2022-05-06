@@ -50,6 +50,10 @@ public:
         return -1;
     }
 
+    static void ResetCheat() {
+        bobbleHeads = false;
+    }
+
     static void ProcessBobbleHead(CPed* ped) {
         if (!bobbleHeads)
             return;
@@ -72,9 +76,14 @@ public:
                     RwV3d s = { scale, scale, scale };
                     RwMatrixScale(mat, &s, rwCOMBINEPRECONCAT);
 
+                    // Fix forehead and jaw
+                    if (i == 7 || i == 6 || i == 8) {
+                        RwV3d t = { 0.0f, -(scale / 6.0f) / 10.0f, 0.0f};
 
-                    if (i == 7 || i == 6) {
-                        RwV3d t = { 0.0f, -(scale / 8.0f) / 10.0f, 0.0f};
+                        if (i == 8) {
+                            t.x = ((scale / 8.0f) / 10.0f) / 8.0f;
+                            t.y /= 8.0f;
+                        }
                         RwMatrixTranslate(mat, &t, rwCOMBINEPRECONCAT);
                     }
                 }
@@ -149,11 +158,24 @@ public:
         onPreRender += [] {
             for (int i = 0; i < CRenderer::ms_nNoOfVisibleEntities; i++) {
                 CEntity* e = CRenderer::ms_aVisibleEntityPtrs[i];
-                if (e && e->m_nType == ENTITY_TYPE_PED) {
+                if (e && (e->m_nType == ENTITY_TYPE_PED)) {
                     CPed* ped = static_cast<CPed*>(e);
                     ProcessBobbleHead(ped);
                 }
             }
         };
+
+#ifdef GTA3
+        CdeclEvent <AddressList<0x48C7BE, H_CALL>, PRIORITY_BEFORE, ArgPickNone, void()> reInitGameEvent;
+#elif GTAVC
+        CdeclEvent <AddressList<0x4A46F1, H_CALL>, PRIORITY_BEFORE, ArgPickNone, void()> reInitGameEvent;
+#else
+        plugin::Events::reInitGameEvent += [] {
+#endif
+#ifndef GTASA
+            reInitGameEvent += [] {
+#endif
+                ResetCheat();
+            };
     }
 } bobbleHead;
