@@ -122,7 +122,7 @@ public:
         ThiscallEvent <AddressList<0x602BE7, H_CALL>, PRIORITY_AFTER, ArgPick2N<CPad*, 0, int, 1>, void(CPad*, int)> addToPCCheatString;
 #endif
 #ifdef GTASA
-        plugin::Events::gameProcessEvent += [] {
+        plugin::Events::processScriptsEvent += [] {
 #else
         addToPCCheatString += [](CPad* pad, int) {
 #endif
